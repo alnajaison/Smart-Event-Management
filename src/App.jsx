@@ -100,9 +100,6 @@ const App = () => {
     const bookedCategories = events
       .filter(e => currentUser.bookings.includes(e.id))
       .map(e => e.category);
-    
-    if (bookedCategories.length === 0) return [];
-    
     return events.filter(e => 
       bookedCategories.includes(e.category) && !currentUser.bookings.includes(e.id)
     ).slice(0, 3);
@@ -121,50 +118,30 @@ const App = () => {
     body { font-family: 'Rajdhani', sans-serif; background: #000; }
   `;
 
-  const NavButton = ({ label, onClick, primary = false, logout = false }) => (
-      <button 
-          onClick={onClick} 
-          style={{ 
-              padding: '0.5rem 1rem', 
-              background: primary ? '#D4FF00' : (logout ? '#ef4444' : 'transparent'), 
-              color: primary ? '#000' : '#fff', 
-              border: 'none', 
-              borderRadius: '0.25rem', 
-              cursor: 'pointer', 
-              fontWeight: 'bold', 
-              fontSize: '0.875rem', 
-              transition: 'all 0.3s' 
-          }}
-          onMouseOver={(e) => { if (!primary && !logout) { e.target.style.backgroundColor = '#D4FF00'; e.target.style.color = '#000'; }}}
-          onMouseOut={(e) => { if (!primary && !logout) { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#fff'; }}}
-      >
-          {label}
-      </button>
-  );
-
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#000', width: '100%', overflow: 'hidden' }}>
       <style>{globalStyles}</style>
       
       <nav style={{ backgroundColor: '#000', borderBottom: '2px solid #D4FF00', padding: '1rem' }}>
-        <div style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => setCurrentPage('home')}>
+        <div style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingLeft: '1rem', paddingRight: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Zap size={24} color="#D4FF00" />
             <h1 style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 'bold', letterSpacing: '1px', fontFamily: "'Michroma', sans-serif" }}>
               SMART<span style={{ color: '#D4FF00' }}>EVENTS</span>
             </h1>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <NavButton label="HOME" onClick={() => setCurrentPage('home')} />
-            <NavButton label="EVENTS" onClick={() => setCurrentPage('events')} />
-            {isLoggedIn ? (
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <button onClick={() => setCurrentPage('home')} style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#fff', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: '600', fontSize: '0.875rem', transition: 'all 0.3s' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#D4FF00'; e.target.style.color = '#000'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#fff'; }}>HOME</button>
+            <button onClick={() => setCurrentPage('events')} style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#fff', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: '600', fontSize: '0.875rem', transition: 'all 0.3s' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#D4FF00'; e.target.style.color = '#000'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#fff'; }}>EVENTS</button>
+            {isLoggedIn && (
               <>
-                <NavButton label="DASH" onClick={() => setCurrentPage('dashboard')} />
-                <NavButton label="ANALYTICS" onClick={() => setCurrentPage('analytics')} />
-                <NavButton label="LOGOUT" onClick={() => { setIsLoggedIn(false); setCurrentUser(null); setCurrentPage('home'); }} logout />
+                <button onClick={() => setCurrentPage('dashboard')} style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#fff', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: '600', fontSize: '0.875rem', transition: 'all 0.3s' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#D4FF00'; e.target.style.color = '#000'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#fff'; }}>DASH</button>
+                <button onClick={() => setCurrentPage('analytics')} style={{ padding: '0.5rem 1rem', background: 'transparent', color: '#fff', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: '600', fontSize: '0.875rem', transition: 'all 0.3s' }} onMouseOver={(e) => { e.target.style.backgroundColor = '#D4FF00'; e.target.style.color = '#000'; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#fff'; }}>ANALYTICS</button>
+                <button onClick={() => { setIsLoggedIn(false); setCurrentUser(null); setCurrentPage('home'); }} style={{ padding: '0.5rem 1rem', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.875rem' }}>LOGOUT</button>
               </>
-            ) : (
-              <NavButton label="LOGIN" onClick={() => setCurrentPage('login')} primary />
+            )}
+            {!isLoggedIn && (
+              <button onClick={() => setCurrentPage('login')} style={{ padding: '0.5rem 1rem', backgroundColor: '#D4FF00', color: '#000', border: 'none', borderRadius: '0.25rem', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.875rem' }}>LOGIN</button>
             )}
           </div>
         </div>
@@ -253,14 +230,28 @@ const App = () => {
                       <p style={{ color: '#9ca3af', marginBottom: '0.75rem', fontSize: '0.875rem' }}>{event.description}</p>
                       
                       <div style={{ marginBottom: '0.75rem', fontSize: '0.875rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af', marginBottom: '0.5rem' }}><Calendar size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} /><span>{event.date}</span></div>
-                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af', marginBottom: '0.5rem' }}><Clock size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} /><span>{event.time}</span></div>
-                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af' }}><MapPin size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} /><span>{event.location}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                          <Calendar size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} />
+                          <span>{event.date}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                          <Clock size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} />
+                          <span>{event.time}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', color: '#9ca3af' }}>
+                          <MapPin size={14} style={{ marginRight: '0.5rem', color: '#D4FF00' }} />
+                          <span>{event.location}</span>
+                        </div>
                       </div>
 
                       <div style={{ marginBottom: '0.75rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.25rem' }}><span style={{ color: '#9ca3af' }}>Seats</span><span style={{ fontWeight: 'bold', color: '#D4FF00' }}>{event.seats - event.booked}/{event.seats}</span></div>
-                        <div style={{ width: '100%', backgroundColor: '#27272a', borderRadius: '9999px', height: '6px' }}><div style={{ backgroundColor: '#D4FF00', height: '6px', borderRadius: '9999px', width: `${(event.booked / event.seats) * 100}%`, transition: 'all 0.3s' }}></div></div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
+                          <span style={{ color: '#9ca3af' }}>Seats</span>
+                          <span style={{ fontWeight: 'bold', color: '#D4FF00' }}>{event.seats - event.booked}/{event.seats}</span>
+                        </div>
+                        <div style={{ width: '100%', backgroundColor: '#27272a', borderRadius: '9999px', height: '6px' }}>
+                          <div style={{ backgroundColor: '#D4FF00', height: '6px', borderRadius: '9999px', width: `${(event.booked / event.seats) * 100}%`, transition: 'all 0.3s' }}></div>
+                        </div>
                       </div>
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
@@ -289,8 +280,12 @@ const App = () => {
 
               <div style={{ backgroundColor: '#18181b', borderRadius: '0.5rem', border: '2px solid #D4FF00', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', backgroundColor: '#000' }}>
-                  <button onClick={() => setIsSignup(false)} style={{ padding: '0.75rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', backgroundColor: !isSignup ? '#D4FF00' : '#18181b', color: !isSignup ? '#000' : '#9ca3af', transition: 'all 0.3s', fontSize: '0.875rem' }}>LOGIN</button>
-                  <button onClick={() => setIsSignup(true)} style={{ padding: '0.75rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', backgroundColor: isSignup ? '#D4FF00' : '#18181b', color: isSignup ? '#000' : '#9ca3af', transition: 'all 0.3s', fontSize: '0.875rem' }}>SIGN UP</button>
+                  <button onClick={() => setIsSignup(false)} style={{ padding: '0.75rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', backgroundColor: !isSignup ? '#D4FF00' : '#18181b', color: !isSignup ? '#000' : '#9ca3af', transition: 'all 0.3s', fontSize: '0.875rem' }}>
+                    LOGIN
+                  </button>
+                  <button onClick={() => setIsSignup(true)} style={{ padding: '0.75rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', backgroundColor: isSignup ? '#D4FF00' : '#18181b', color: isSignup ? '#000' : '#9ca3af', transition: 'all 0.3s', fontSize: '0.875rem' }}>
+                    SIGN UP
+                  </button>
                 </div>
 
                 <div style={{ padding: '1.5rem' }}>
@@ -304,8 +299,12 @@ const App = () => {
                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#D4FF00', fontFamily: "'Michroma', sans-serif" }}>PASSWORD</label>
                         <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', padding: '0.75rem', backgroundColor: '#000', border: '2px solid #3f3f46', borderRadius: '0.375rem', color: '#fff', outline: 'none', fontSize: '0.875rem', boxSizing: 'border-box' }} onFocus={(e) => e.target.style.borderColor = '#D4FF00'} onBlur={(e) => e.target.style.borderColor = '#3f3f46'} />
                       </div>
-                      <button type="submit" style={{ width: '100%', backgroundColor: '#D4FF00', color: '#000', padding: '0.75rem', borderRadius: '0.375rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '0.875rem' }}>LOGIN</button>
-                      <p style={{ fontSize: '0.75rem', color: '#6b7280', backgroundColor: '#27272a', padding: '0.75rem', borderRadius: '0.25rem', marginTop: '0.75rem', textAlign: 'center' }}>Demo: demo@example.com / demo123</p>
+                      <button type="submit" style={{ width: '100%', backgroundColor: '#D4FF00', color: '#000', padding: '0.75rem', borderRadius: '0.375rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '0.875rem' }}>
+                        LOGIN
+                      </button>
+                      <p style={{ fontSize: '0.75rem', color: '#6b7280', backgroundColor: '#27272a', padding: '0.75rem', borderRadius: '0.25rem', marginTop: '0.75rem', textAlign: 'center' }}>
+                        Demo: demo@example.com / demo123
+                      </p>
                     </form>
                   ) : (
                     <form onSubmit={handleSignup}>
@@ -319,7 +318,7 @@ const App = () => {
                       </div>
                       <div style={{ marginBottom: '1rem' }}>
                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#D4FF00', fontFamily: "'Michroma', sans-serif" }}>PASSWORD</label>
-                        <input type="password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} placeholder="••••••••" required style={{ width: '100%', padding: '0.75rem', backgroundColor: '#000', border: '2px solid #3f3f46', borderRadius: '0.375rem', color: '#fff', outline: 'none', fontSize: '0.875rem', boxSizing: 'border-box' }} onFocus={(e) => e.target.style.borderColor = '#D4FF00'} onBlur={(e) => e.target.style.borderColor = '#3f3f46'} />
+                        <input type="password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} placeholder="•••••" required style={{ width: '100%', padding: '0.75rem', backgroundColor: '#000', border: '2px solid #3f3f46', borderRadius: '0.375rem', color: '#fff', outline: 'none', fontSize: '0.875rem', boxSizing: 'border-box' }} onFocus={(e) => e.target.style.borderColor = '#D4FF00'} onBlur={(e) => e.target.style.borderColor = '#3f3f46'} />
                       </div>
                       <button type="submit" style={{ width: '100%', backgroundColor: '#D4FF00', color: '#000', padding: '0.75rem', borderRadius: '0.375rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '0.875rem' }}>
                         CREATE ACCOUNT
@@ -357,8 +356,8 @@ const App = () => {
 
               <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#D4FF00', fontFamily: "'Michroma', sans-serif" }}>MY BOOKED EVENTS</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-                {currentUser.bookings.length === 0 ? (
-                  <div style={{ backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.5rem', border: '2px solid #3f3f46', textAlign: 'center', gridColumn: '1 / -1' }}>
+                {events.filter(e => currentUser.bookings.includes(e.id)).length === 0 ? (
+                  <div style={{ backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.5rem', border: '2px solid #3f3f46', textAlign: 'center' }}>
                     <p style={{ color: '#9ca3af', marginBottom: '1rem', fontSize: '0.875rem' }}>No bookings yet!</p>
                     <button onClick={() => setCurrentPage('events')} style={{ backgroundColor: '#D4FF00', color: '#000', padding: '0.75rem 1.5rem', borderRadius: '0.375rem', fontWeight: 'bold', border: 'none', cursor: 'pointer', fontSize: '0.875rem' }}>
                       BROWSE EVENTS
@@ -368,7 +367,7 @@ const App = () => {
                   events.filter(e => currentUser.bookings.includes(e.id)).map(event => (
                     <div key={event.id} style={{ backgroundColor: '#18181b', borderRadius: '0.5rem', border: '2px solid #3f3f46', padding: '1rem', display: 'flex', gap: '1rem', transition: 'all 0.3s' }} onMouseOver={(e) => e.currentTarget.style.borderColor = '#D4FF00'} onMouseOut={(e) => e.currentTarget.style.borderColor = '#3f3f46'}>
                       <div style={{ fontSize: '1.75rem', minWidth: '32px' }}>{event.image}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ flex: 1 }}>
                         <h4 style={{ fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '0.25rem', color: '#D4FF00', fontFamily: "'Michroma', sans-serif" }}>{event.title}</h4>
                         <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '0.5rem' }}>{event.date} at {event.time}</p>
                         <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>{event.location}</p>
@@ -410,11 +409,11 @@ const App = () => {
               <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.5rem', border: '2px solid #D4FF00' }}>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#D4FF00', fontFamily: "'Michroma', sans-serif" }}>TOP EVENTS BY BOOKINGS</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {[...events].sort((a, b) => b.booked - a.booked).slice(0, 4).map((e, i, arr) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                  {[...events].sort((a, b) => b.booked - a.booked).slice(0, 4).map((e, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
                       <span style={{ fontSize: '0.875rem', minWidth: '150px', flex: '1 1 150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
                       <div style={{ flex: '2 1 200px', backgroundColor: '#27272a', borderRadius: '0.25rem', height: '24px', position: 'relative', overflow: 'hidden' }}>
-                        <div style={{ backgroundColor: '#D4FF00', height: '100%', width: `${(e.booked / arr[0].booked) * 100}%`, transition: 'all 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '0.5rem' }}>
+                        <div style={{ backgroundColor: '#D4FF00', height: '100%', width: `${(e.booked / 320) * 100}%`, transition: 'all 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '0.5rem' }}>
                           <span style={{ color: '#000', fontSize: '0.75rem', fontWeight: 'bold' }}>{e.booked}</span>
                         </div>
                       </div>
