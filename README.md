@@ -1,4 +1,8 @@
-# React + Vite
+# Smart Events
+
+The Smart Event Management System is a full-stack web application developed to simplify event organization and participation. The platform allows users to explore different events such as workshops, seminars, hackathons, and cultural programs, register/login, and book seats for events. It also includes an analytics dashboard that visualizes event participation trends using charts. The project is built using React for the frontend, Node.js and Express.js for the backend, MongoDB for database management, and Chart.js for data visualization, demonstrating concepts of modern web development and client-server architecture.
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
